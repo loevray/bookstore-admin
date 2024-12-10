@@ -7,4 +7,5 @@ export interface I_Books {
   publisher: string;
   price: number;
   amount: number;
+  totalBooks: number;
 }

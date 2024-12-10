@@ -5,32 +5,68 @@ import {
   getDocs,
   FirestoreError,
   addDoc,
+  query,
+  limit,
+  orderBy,
+  startAfter,
+  getCountFromServer,
 } from 'firebase/firestore';
 import booksConverter from '@/app/firebase/booksConverter';
 
-export async function GET() {
+const PAGE_SIZE = 10;
+
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+
   try {
-    const books = await getDocs(
-      collection(db, 'books').withConverter(booksConverter),
-    );
-    const booksData = books.docs.map((doc) => ({ ...doc.data() }));
+    const page = searchParams.get('page') ?? 1;
+    const booksRef = collection(db, 'books').withConverter(booksConverter);
+
+    let booksQuery = query(booksRef, orderBy('title'), limit(PAGE_SIZE));
+
+    if (+page > 1) {
+      const lastVisibleDoc = await getLastVisibleDoc(+page, PAGE_SIZE);
+      if (lastVisibleDoc) {
+        booksQuery = query(
+          booksRef,
+          orderBy('title'),
+          startAfter(lastVisibleDoc),
+          limit(PAGE_SIZE),
+        );
+      }
+    }
+
+    const books = await getDocs(booksQuery);
+    const snapshot = await getCountFromServer(booksRef);
+    const totalBooks = snapshot.data().count;
+    console.log(totalBooks);
+    const booksData = books.docs.map((doc) => ({ ...doc.data(), totalBooks }));
+
     return NextResponse.json(booksData);
   } catch (error) {
     if (error instanceof FirestoreError) {
-      // FirestoreError에서 제공하는 code별 분류 필요
       return NextResponse.json({ message: error.code }, { status: 400 });
     }
-
     let errorMessage;
     if (error instanceof Error) {
       errorMessage = error.message;
     } else {
       errorMessage = String(error);
     }
-
     console.error('Error fetching books:', errorMessage);
     return NextResponse.json({ message: errorMessage }, { status: 500 });
   }
+}
+async function getLastVisibleDoc(page: number, PAGE_SIZE: number) {
+  const offset = (page - 1) * PAGE_SIZE;
+  const initialQuery = query(
+    collection(db, 'books').withConverter(booksConverter),
+    orderBy('title'),
+    limit(offset),
+  );
+  const initialDocs = await getDocs(initialQuery);
+  const lastVisible = initialDocs.docs[initialDocs.docs.length - 1];
+  return lastVisible;
 }
 
 export async function POST(req: NextRequest) {
