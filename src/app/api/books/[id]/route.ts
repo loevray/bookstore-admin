@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import db from '@/app/firebase/firebasedb'
-import { doc, getDoc, FirestoreError, setDoc } from 'firebase/firestore'
+import {
+  doc,
+  getDoc,
+  FirestoreError,
+  setDoc,
+  deleteDoc,
+} from 'firebase/firestore'
 import booksConverter from '@/app/firebase/booksConverter'
 
 export interface I_Books {
@@ -74,6 +80,36 @@ export async function PUT(req: NextRequest, { params }: I_RouteHandlerParams) {
       errorMessage = String(error)
     }
     console.error('Error updating book:', errorMessage)
+    return NextResponse.json({ message: errorMessage }, { status: 500 })
+  }
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: I_RouteHandlerParams,
+) {
+  try {
+    const { id: bookId } = await params
+    const bookDocumentRef = doc(db, 'books', bookId)
+
+    await deleteDoc(bookDocumentRef)
+
+    return NextResponse.json(
+      { message: 'Book deleted successfully' },
+      { status: 200 },
+    )
+  } catch (error) {
+    if (error instanceof FirestoreError) {
+      return NextResponse.json({ message: error.code }, { status: 400 })
+    }
+
+    let errorMessage
+    if (error instanceof Error) {
+      errorMessage = error.message
+    } else {
+      errorMessage = String(error)
+    }
+    console.error('Error deleting book:', errorMessage)
     return NextResponse.json({ message: errorMessage }, { status: 500 })
   }
 }
