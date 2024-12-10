@@ -1,20 +1,15 @@
 'use client';
 
-import { I_Books } from '@/app/api/books/route';
-import getBookList from '@/app/lib/services/getBookList';
+import { fetchBookList } from '@/app/lib/services/api';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import HomeBook from './HomeBook';
 
-export default function BookList({
-  initialBookData,
-}: {
-  initialBookData: I_Books[];
-}) {
+export default function BookList() {
   const { data } = useSuspenseQuery({
     queryKey: ['book-list'],
-    queryFn: getBookList,
-    initialData: initialBookData,
+    queryFn: () => fetchBookList(),
   });
+
   return (
     <article>
       {data.map((book) => (
