@@ -1,5 +1,5 @@
 import { FirestoreDataConverter } from 'firebase/firestore';
-import { I_Books } from '../api/books/route';
+import { I_Books } from '../api/books/type';
 
 const booksConverter: FirestoreDataConverter<I_Books> = {
   toFirestore(book: I_Books) {

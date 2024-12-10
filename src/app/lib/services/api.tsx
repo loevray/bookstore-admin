@@ -1,4 +1,4 @@
-import { I_Books } from '@/app/api/books/route';
+import { I_Books } from '@/app/api/books/type';
 
 export async function fetchBookList(): Promise<I_Books[]> {
   try {
