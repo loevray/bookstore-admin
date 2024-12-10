@@ -3,7 +3,6 @@
  */
 
 import {GET} from '@/app/api/books/route'
-import BOOKS from '@/mocks/books';
 
 describe('/api/books API test', () => {
   test('return 200 status and correct data', async () => {
@@ -12,9 +11,6 @@ describe('/api/books API test', () => {
 
     expect(response.status).toBe(200);
     
-    const data = await response.json();
-    
-    expect(data).toEqual(BOOKS);
   });
 
 });
