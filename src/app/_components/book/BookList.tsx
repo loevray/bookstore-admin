@@ -11,10 +11,10 @@ export default function BookList() {
   });
 
   return (
-    <article>
+    <section className="flex flex-wrap  gap-4">
       {data.map((book) => (
         <HomeBook {...book} key={book.id} />
       ))}
-    </article>
+    </section>
   );
 }

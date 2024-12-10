@@ -1,16 +1,16 @@
-import { Suspense } from 'react';
 import BookList from './_components/book/BookList';
-import getBookList from './lib/services/getBookList';
+import { fetchBookList } from './lib/services/api';
 import ApiQueryWrapper from './_components/book/ApiQueryLayer';
+import BookListWrapper from './_components/book/BookListWrapper';
 
 export default async function Home() {
-  const initialBookData = await getBookList();
+  const initialBookData = await fetchBookList();
 
   return (
     <div>
       <main>
         <ApiQueryWrapper>
-          <BookList initialBookData={initialBookData} />
+          <BookListWrapper />
         </ApiQueryWrapper>
       </main>
     </div>

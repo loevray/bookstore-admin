@@ -10,12 +10,12 @@ export default function HomeBook({
   src?: string;
 }) {
   return (
-    <article>
+    <article className="flex flex-col items-center min-w-[250px] max-w-[250px] border-green-500 border-solid border-2">
       <img src={src} alt="book-cover" />
       <p>{title}</p>
-      <p>{author}</p>
-      <p>{publisher}</p>
-      <p>{price}</p>
+      <p>저자:{author}</p>
+      <p>출판사:{publisher}</p>
+      <p>가격:{price}</p>
       <p>품절?</p>
     </article>
   );
