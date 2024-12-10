@@ -14,7 +14,7 @@ describe('/api/books API test', () => {
     
     const data = await response.json();
     
-    expect(data).toEqual(BOOKS);;
+    expect(data).toEqual(BOOKS);
   });
 
 });
