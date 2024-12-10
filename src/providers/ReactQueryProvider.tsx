@@ -13,6 +13,7 @@ function ReactQueryProvider({ children }: PropsWithChildren) {
         retry: 1,
         refetchOnMount: false,
         refetchOnWindowFocus: false,
+        throwOnError: true,
       },
     },
   });
