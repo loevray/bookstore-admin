@@ -12,8 +12,13 @@ export default function ApiQueryWrapper({
   return (
     <QueryErrorResetBoundary>
       {({ reset }) => (
-        <ErrorBoundary onReset={reset} fallback={<div>오류</div>}>
-          <Suspense fallback={<div>로딩중~</div>}>{children}</Suspense>
+        <ErrorBoundary
+          onReset={reset}
+          fallbackRender={() => <div>api query error!</div>}
+        >
+          <Suspense fallback={<div>api query loading...</div>}>
+            {children}
+          </Suspense>
         </ErrorBoundary>
       )}
     </QueryErrorResetBoundary>
