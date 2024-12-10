@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import { GlobalErrorBoundary } from './_components/book/GlobalErrorBoundary';
 import Providers from './providers';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -31,6 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
+          <ReactQueryDevtools initialIsOpen={false} />
           <GlobalErrorBoundary>{children}</GlobalErrorBoundary>
         </Providers>
       </body>
