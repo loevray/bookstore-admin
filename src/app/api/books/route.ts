@@ -10,6 +10,7 @@ import {
   orderBy,
   startAfter,
   getCountFromServer,
+  where,
 } from 'firebase/firestore';
 import booksConverter from '@/app/firebase/booksConverter';
 
@@ -20,12 +21,28 @@ export async function GET(req: NextRequest) {
 
   try {
     const page = searchParams.get('page') ?? 1;
+    const searchedTitle = searchParams.get('title') || '';
+    const searchedAuthor = searchParams.get('author') || '';
     const booksRef = collection(db, 'books').withConverter(booksConverter);
 
     let booksQuery = query(booksRef, orderBy('title'), limit(PAGE_SIZE));
 
+    if (searchedTitle) {
+      booksQuery = query(booksQuery, where('title', '==', searchedTitle));
+    }
+
+    if (searchedAuthor) {
+      booksQuery = query(booksQuery, where('title', '==', searchedAuthor));
+    }
+
     if (+page > 1) {
-      const lastVisibleDoc = await getLastVisibleDoc(+page, PAGE_SIZE);
+      const lastVisibleDoc = await getLastVisibleDoc(
+        +page,
+        PAGE_SIZE,
+        searchedTitle,
+        searchedAuthor,
+      );
+
       if (lastVisibleDoc) {
         booksQuery = query(
           booksRef,
@@ -38,8 +55,12 @@ export async function GET(req: NextRequest) {
 
     const books = await getDocs(booksQuery);
     const snapshot = await getCountFromServer(booksRef);
-    const totalBooks = snapshot.data().count;
-    console.log(totalBooks);
+    let totalBooks = snapshot.data().count;
+
+    if (searchedAuthor || searchedTitle) {
+      totalBooks = (await getDocs(booksQuery)).docs.length;
+    }
+
     const booksData = books.docs.map((doc) => ({ ...doc.data(), totalBooks }));
 
     return NextResponse.json(booksData);
@@ -57,13 +78,28 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: errorMessage }, { status: 500 });
   }
 }
-async function getLastVisibleDoc(page: number, PAGE_SIZE: number) {
-  const offset = (page - 1) * PAGE_SIZE;
-  const initialQuery = query(
+
+async function getLastVisibleDoc(
+  page: number,
+  pageSize = PAGE_SIZE,
+  title: string,
+  author: string,
+) {
+  const offset = (page - 1) * pageSize;
+
+  let initialQuery = query(
     collection(db, 'books').withConverter(booksConverter),
     orderBy('title'),
     limit(offset),
   );
+
+  if (title) {
+    initialQuery = query(initialQuery, where('title', '==', title));
+  }
+
+  if (author) {
+    initialQuery = query(initialQuery, where('author', '==', author));
+  }
   const initialDocs = await getDocs(initialQuery);
   const lastVisible = initialDocs.docs[initialDocs.docs.length - 1];
   return lastVisible;
