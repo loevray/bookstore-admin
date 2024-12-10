@@ -20,8 +20,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Test utility functions
+      - name: Unit test
         run: npm run test
 
-      - name: Build with yarn
+      - name: Build with npm
         run: npm run build
