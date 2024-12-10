@@ -6,7 +6,7 @@ import HomeBook from './HomeBook';
 
 export default function BookList() {
   const { data } = useSuspenseQuery({
-    queryKey: ['book-list'],
+    queryKey: ['bookList'],
     queryFn: () => fetchBookList(),
   });
 
