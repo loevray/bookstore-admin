@@ -2,7 +2,7 @@ import { I_Books } from '@/app/api/books/type';
 
 export async function fetchBookList({ page = 1, title = '', author = '' }) {
   try {
-    const url = new URL('http://localhost:3000/api/books');
+    const url = new URL('/api/books');
     url.searchParams.append('page', page.toString());
     if (title) url.searchParams.append('title', title);
     if (author) url.searchParams.append('author', author);
@@ -24,7 +24,7 @@ export async function fetchBook({ bookId }: { bookId: string }) {
   try {
     if (!bookId) return new Error('책 id가 존재하지 않습니다');
 
-    const response = await fetch(`http://localhost:3000/api/books/${bookId}`, {
+    const response = await fetch(`/api/books/${bookId}`, {
       cache: 'no-store',
       next: { revalidate: 0 },
     });
@@ -49,7 +49,7 @@ export async function updateBook({
   updatedData: Partial<I_Books>;
 }) {
   try {
-    const response = await fetch(`http://localhost:3000/api/books/${bookId}`, {
+    const response = await fetch(`/api/books/${bookId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedData),
