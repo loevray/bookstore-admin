@@ -9,12 +9,13 @@ export default function ApiQueryWrapper({
 }: {
   children: React.ReactNode;
 }) {
+  console.log('apiqueryerror 실행됨');
   return (
     <QueryErrorResetBoundary>
       {({ reset }) => (
         <ErrorBoundary
           onReset={reset}
-          fallbackRender={() => <div>api query error!</div>}
+          fallbackRender={() => <div>api query error</div>}
         >
           <Suspense fallback={<div>api query loading...</div>}>
             {children}

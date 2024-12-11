@@ -5,13 +5,13 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
-import { fetchBook, updateBook } from '@/app/lib/services/api';
+import { deleteBook, fetchBook, updateBook } from '@/app/lib/services/api';
 import { I_Books } from '@/app/api/books/type';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function BookDetail() {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   const pathname = usePathname();
   const bookId = pathname.replace(/\//g, '');
 
@@ -35,7 +35,17 @@ export default function BookDetail() {
     },
   });
 
+  const { mutate: mutateDeleteBook } = useMutation({
+    mutationFn: (bookId: string) => deleteBook({ bookId }),
+    onSuccess: () => {
+      router.push('/');
+      queryClient.invalidateQueries({ queryKey: ['book', bookId] });
+    },
+  });
+
   const currentBook = (cachedBook ?? book) as I_Books;
+
+  const removeBook = (bookId: string) => mutateDeleteBook(bookId);
 
   const increaseAmount = (currentAmount: number) => mutate(currentAmount + 1);
 
@@ -78,6 +88,12 @@ export default function BookDetail() {
           onClick={() => increaseAmount(currentBook.amount)}
         >
           +
+        </button>
+        <button
+          className="px-4 py-2 bg-red-500 text-white rounded-md ml-auto"
+          onClick={() => removeBook(bookId)}
+        >
+          삭제
         </button>
       </footer>
     </article>
