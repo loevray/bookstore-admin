@@ -1,8 +1,12 @@
 import { I_Books } from '@/app/api/books/type';
 
+const BASE_URL = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : 'http://localhost:3000';
+
 export async function fetchBookList({ page = 1, title = '', author = '' }) {
   try {
-    const url = new URL('/api/books');
+    const url = new URL(`${BASE_URL}/api/books`);
     url.searchParams.append('page', page.toString());
     if (title) url.searchParams.append('title', title);
     if (author) url.searchParams.append('author', author);
@@ -13,6 +17,7 @@ export async function fetchBookList({ page = 1, title = '', author = '' }) {
     });
 
     const data = await response.json();
+
     if (!response.ok) return new Error('Failed to fetch book');
     return data;
   } catch (e) {
@@ -24,7 +29,7 @@ export async function fetchBook({ bookId }: { bookId: string }) {
   try {
     if (!bookId) return new Error('책 id가 존재하지 않습니다');
 
-    const response = await fetch(`/api/books/${bookId}`, {
+    const response = await fetch(`${BASE_URL}/api/books/${bookId}`, {
       cache: 'no-store',
       next: { revalidate: 0 },
     });
@@ -49,7 +54,7 @@ export async function updateBook({
   updatedData: Partial<I_Books>;
 }) {
   try {
-    const response = await fetch(`/api/books/${bookId}`, {
+    const response = await fetch(`${BASE_URL}/api/books/${bookId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedData),
@@ -69,7 +74,7 @@ export async function updateBook({
 
 export async function deleteBook({ bookId }: { bookId: string }) {
   try {
-    const response = await fetch(`/api/books/${bookId}`, {
+    const response = await fetch(`${BASE_URL}/api/books/${bookId}`, {
       method: 'DELETE',
     });
 
@@ -90,7 +95,7 @@ export async function addBook({
   newBookData: Omit<I_Books, 'id' | 'totalBooks'>;
 }) {
   try {
-    const response = await fetch(`/api/books`, {
+    const response = await fetch(`${BASE_URL}/api/books`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newBookData),

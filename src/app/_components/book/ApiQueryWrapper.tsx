@@ -9,7 +9,6 @@ export default function ApiQueryWrapper({
 }: {
   children: React.ReactNode;
 }) {
-  console.log('apiqueryerror 실행됨');
   return (
     <QueryErrorResetBoundary>
       {({ reset }) => (
