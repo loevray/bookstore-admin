@@ -1,8 +1,9 @@
 import { I_Books } from '@/app/api/books/type';
 
-const BASE_URL = process.env.VERCEL_ENV
-  ? `https://${process.env.VERCEL_URL}`
-  : 'http://localhost:3000';
+const BASE_URL =
+  process.env.VERCEL_ENV === 'production'
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000';
 
 export async function fetchBookList({ page = 1, title = '', author = '' }) {
   try {
