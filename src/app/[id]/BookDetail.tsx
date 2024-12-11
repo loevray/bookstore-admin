@@ -17,7 +17,8 @@ export default function BookDetail() {
 
   const { data: book } = useSuspenseQuery({
     queryKey: ['book', bookId],
-    queryFn: () => (cachedBook ? null : fetchBook({ id: bookId.toString() })),
+    queryFn: () =>
+      cachedBook ? null : fetchBook({ bookId: bookId.toString() }),
   });
 
   const currentBook = cachedBook || book;
