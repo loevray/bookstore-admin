@@ -26,7 +26,7 @@ export default function BookList() {
 
   //todos : page size 10 magic number 상수화
   //page 범위 밖 접근시 error?
-  const maxPage = Math.floor(data[0].totalBooks / 10);
+  const maxPage = Math.ceil(data[0].totalBooks / 10);
 
   return (
     <div>
