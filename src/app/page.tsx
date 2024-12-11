@@ -1,6 +1,7 @@
 import ApiQueryWrapper from './_components/book/ApiQueryWrapper';
 import BookListWrapper from './_components/book/BookListWrapper';
 import BookSearchForm from './_components/book/BookSearchForm';
+import FloatingButton from './_components/book/FloatingButton';
 
 export default async function Home() {
   return (
@@ -17,6 +18,7 @@ export default async function Home() {
       <footer className="bg-blue-600 text-white py-4 text-center mt-8">
         <p>&copy; 2024 Bookstore. All rights reserved.</p>
       </footer>
+      <FloatingButton />
     </div>
   );
 }

@@ -23,11 +23,12 @@ export default function BookDetailPage() {
             Discover the details of your selected book
           </p>
         </header>
-        <ApiQueryWrapper>
-          <div className="bg-blue-100 rounded-lg shadow-md p-8">
+
+        <div className="bg-blue-100 rounded-lg shadow-md p-8">
+          <ApiQueryWrapper>
             <BookDetail />
-          </div>
-        </ApiQueryWrapper>
+          </ApiQueryWrapper>
+        </div>
         <footer className="mt-8 text-gray-600 text-center">
           <div className="border-t border-gray-200 pt-4">
             <p className="text-sm">

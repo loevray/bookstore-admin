@@ -4,13 +4,14 @@ import {
   collection,
   getDocs,
   FirestoreError,
-  addDoc,
   query,
   limit,
   orderBy,
   startAfter,
   getCountFromServer,
   where,
+  setDoc,
+  doc,
 } from 'firebase/firestore';
 import booksConverter from '@/app/firebase/booksConverter';
 
@@ -107,17 +108,19 @@ async function getLastVisibleDoc(
 
 export async function POST(req: NextRequest) {
   try {
+    const newBookId = crypto.randomUUID();
     const book = await req.json();
-    const booksDocumentRef = await addDoc(
-      collection(db, 'books').withConverter(booksConverter),
-      book,
-    );
+
+    await setDoc(doc(db, 'books', newBookId), {
+      ...book,
+      id: newBookId,
+    });
 
     return NextResponse.json(
-      { id: booksDocumentRef.id },
+      { id: newBookId },
       {
         status: 201,
-        headers: { Location: `/api/books/${booksDocumentRef.id}` },
+        headers: { Location: `/api/books/${newBookId}` },
       },
     );
   } catch (error) {
