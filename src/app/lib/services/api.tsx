@@ -34,8 +34,9 @@ export async function fetchBook({
       cache: 'no-store',
       next: { revalidate: 0 },
     });
-
     const data = await response.json();
+    if (!response.ok) throw new Error(data);
+
     return data;
   } catch (e) {
     throw e;
