@@ -148,6 +148,68 @@ build a bookstore for admin.
 
 # How to install
 
+Docker를 사용하여 운영 체제에 관계없이 쉽게 실행할 수 있습니다.
+
+## 요구사항
+- [Docker](https://www.docker.com/) 및 [Docker Compose](https://docs.docker.com/compose/)가 설치되어 있어야 합니다.
+
+## 실행 방법
+
+### 1. Docker 이미지 빌드
+프로젝트 루트 디렉토리에서 아래 명령어를 실행합니다:
+
+```bash
+docker build -t bookstore-admin .
+```
+
+- **`-t bookstore-admin`**: 이미지를 `bookstore-admin`이라는 이름으로 태그합니다.
+- **`.`**: 현재 디렉토리의 Dockerfile을 사용합니다.
+
+### 2. Docker 컨테이너 실행
+이미지 빌드가 완료되면 아래 명령어로 컨테이너를 실행합니다:
+
+```bash
+docker run -p 3000:3000 --name bookstore-admin-container bookstore-admin
+```
+
+- **`-p 3000:3000`**: 컨테이너의 3000번 포트를 로컬 머신의 3000번 포트에 연결합니다.
+- **`--name bookstore-admin-container`**: 컨테이너 이름을 `bookstore-admin-container`로 설정합니다.
+
+컨테이너가 실행되면 브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 애플리케이션에 접속합니다.
+
+### 3. 컨테이너 정지 및 삭제
+컨테이너를 정지하거나 삭제하려면 아래 명령어를 사용합니다:
+
+#### 컨테이너 정지
+```bash
+docker stop bookstore-admin-container
+```
+
+#### 컨테이너 삭제
+```bash
+docker rm bookstore-admin-container
+```
+
+---
+
+## 기타 명령어
+
+### Docker 이미지 확인
+```bash
+docker images
+```
+
+### Docker 컨테이너 확인
+```bash
+docker ps -a
+```
+
+---
+
+## 추가 정보
+Docker 설정과 관련해 문제가 발생하거나 개선점이 있다면 메일 rei980213@gmail.com 를 통해 알려주세요.
+
+
 ---
 
 # 후기
@@ -163,6 +225,6 @@ build a bookstore for admin.
 - 도메인 로직과 ui로직의 분리
 
 등등...나열하려면 끝도없지만, 과제를 진행하면서 정말 많은것 을 배웠습니다.
-미숙한 코드를 봐주셔서 감사합니다.
+이상으로 미숙한 코드를 봐주셔서 감사합니다.
 
 
