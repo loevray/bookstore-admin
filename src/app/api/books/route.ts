@@ -4,7 +4,6 @@ import {
   collection,
   getDocs,
   FirestoreError,
-  addDoc,
   query,
   limit,
   orderBy,
@@ -111,11 +110,6 @@ export async function POST(req: NextRequest) {
   try {
     const newBookId = crypto.randomUUID();
     const book = await req.json();
-
-    const booksDocumentRef = await setDoc(doc(db, 'books', newBookId), {
-      ...book,
-      id: newBookId,
-    });
 
     return NextResponse.json(
       { id: newBookId },
