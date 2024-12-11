@@ -15,22 +15,19 @@ export default function BookDetail() {
   const pathname = usePathname();
   const bookId = pathname.replace(/\//g, '');
 
-  const cachedBook: I_Books | undefined =
-    queryClient
-      .getQueryData<I_Books[]>(['bookList'])
-      ?.find((book) => book.id === bookId) ||
-    queryClient.getQueryData<I_Books>(['book', bookId]);
+  const cachedBook: I_Books | undefined = queryClient
+    .getQueryData<I_Books[]>(['bookList'])
+    ?.find((book) => book.id === bookId);
 
   const { data: book } = useSuspenseQuery({
     queryKey: ['book', bookId],
-    queryFn: () =>
-      cachedBook ? null : fetchBook({ bookId: bookId.toString() }),
+    queryFn: () => (cachedBook ? null : fetchBook({ bookId })),
   });
 
   const { mutate } = useMutation({
     mutationFn: (newAmount: number) =>
       updateBook({
-        bookId: bookId.toString(),
+        bookId,
         updatedData: { amount: newAmount },
       }),
     onSuccess: () => {
@@ -67,21 +64,18 @@ export default function BookDetail() {
         <p className="text-lg text-gray-700 mb-2">
           <strong>Price:</strong> {currentBook.price.toLocaleString()}원
         </p>
-        <p className="text-lg text-gray-700 mb-4">
-          <strong>Available Amount:</strong> {currentBook.amount}개
-        </p>
       </section>
       <footer className="flex items-center space-x-4 mt-4">
         <button
           className="px-4 py-2 bg-blue-500 text-white rounded-md"
-          onClick={() => increaseAmount(currentBook.amount)}
+          onClick={() => decreaseAmount(currentBook.amount)}
         >
           -
         </button>
-        <span className="text-lg">{1 /* Quantity state needed */}</span>
+        <span className="text-lg">{currentBook.amount}개</span>
         <button
           className="px-4 py-2 bg-blue-500 text-white rounded-md"
-          onClick={() => decreaseAmount(currentBook.amount)}
+          onClick={() => increaseAmount(currentBook.amount)}
         >
           +
         </button>

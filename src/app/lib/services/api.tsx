@@ -60,7 +60,9 @@ export async function updateBook({
       throw new Error('Failed to update book');
     }
 
-    return response.json();
+    const data = await response.json();
+
+    return data;
   } catch (e) {
     throw e;
   }
