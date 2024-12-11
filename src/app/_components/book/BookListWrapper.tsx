@@ -9,10 +9,17 @@ import BookList from './BookList';
 export default async function BookListWrapper() {
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: ['bookList', { page: 1, title: '', author: '' }],
-    queryFn: () => fetchBookList({}),
-  });
+  const cachedBookList = queryClient.getQueryData([
+    'bookList',
+    { page: 1, title: '', author: '' },
+  ]);
+
+  if (!cachedBookList) {
+    await queryClient.prefetchQuery({
+      queryKey: ['bookList', { page: 1, title: '', author: '' }],
+      queryFn: () => fetchBookList({}),
+    });
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
