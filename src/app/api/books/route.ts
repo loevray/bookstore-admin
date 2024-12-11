@@ -19,7 +19,6 @@ const PAGE_SIZE = 10;
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
-
   try {
     const page = searchParams.get('page') ?? 1;
     const searchedTitle = searchParams.get('title') || '';
@@ -33,7 +32,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (searchedAuthor) {
-      booksQuery = query(booksQuery, where('title', '==', searchedAuthor));
+      booksQuery = query(booksQuery, where('author', '==', searchedAuthor));
     }
 
     if (+page > 1) {

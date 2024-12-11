@@ -34,7 +34,7 @@ export default function BookSearchForm() {
   const onSubmit = (data: SearchFormData) => {
     const params = new URLSearchParams();
     params.set(data.searchBy, data.searchTerm.trim().slice(0, 50));
-    router.push(`?${params.toString()}`);
+    router.push(`?page=1&${params.toString()}`);
   };
 
   return (
