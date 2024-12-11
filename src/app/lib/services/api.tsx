@@ -83,3 +83,25 @@ export async function deleteBook({ bookId }: { bookId: string }) {
     return e;
   }
 }
+
+export async function addBook({
+  newBookData,
+}: {
+  newBookData: Omit<I_Books, 'id' | 'totalBooks'>;
+}) {
+  try {
+    const response = await fetch(`/api/books`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newBookData),
+    });
+
+    if (!response.ok) return new Error(`Failed to add book.`);
+
+    const data = await response.json();
+
+    return data;
+  } catch (e) {
+    return e;
+  }
+}
