@@ -40,7 +40,7 @@ export default function BookSearchForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="px-4 py-2 bg-blue-100 rounded-md shadow-md flex items-center space-x-4"
+      className="px-4 py-2 bg-blue-100 rounded-md shadow-md flex items-center space-x-4 text-black"
     >
       <div className="flex items-center space-x-2">
         <label htmlFor="searchBy" className="text-gray-700">

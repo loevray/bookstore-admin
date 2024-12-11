@@ -4,6 +4,7 @@ import { fetchBookList } from '@/app/lib/services/api';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import HomeBook from './HomeBook';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { I_Books } from '@/app/api/books/type';
 
 export default function BookList() {
   const searchParams = useSearchParams();
@@ -12,7 +13,7 @@ export default function BookList() {
   const title = searchParams.get('title') ?? '';
   const author = searchParams.get('author') ?? '';
 
-  const { data } = useSuspenseQuery({
+  const { data } = useSuspenseQuery<I_Books[]>({
     queryKey: ['bookList', { page, title, author }],
     queryFn: () => fetchBookList({ page: +page, title, author }),
   });
