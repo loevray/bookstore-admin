@@ -10,8 +10,8 @@ export default async function BookListWrapper() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ['bookList', 1],
-    queryFn: () => fetchBookList(),
+    queryKey: ['bookList', { page: 1, title: '', author: '' }],
+    queryFn: () => fetchBookList({}),
   });
 
   return (
