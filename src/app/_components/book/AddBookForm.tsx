@@ -5,21 +5,40 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 const bookSchema = z.object({
-  title: z.string().min(1, { message: 'Title is required' }),
-  author: z.string().min(1, { message: 'Author is required' }),
-  plot: z.string().min(1, { message: 'Plot is required' }),
-  publicationYear: z.date().max(new Date(), '미래에서 오셨군요!'),
-  publisher: z.string().min(1, { message: 'Publisher is required' }),
+  title: z
+    .string()
+    .min(1, { message: 'Title is required' })
+    .max(40, { message: 'Title must be 40 characters or less' }),
+  author: z
+    .string()
+    .min(1, { message: 'Author is required' })
+    .max(40, { message: 'Author must be 40 characters or less' }),
+  plot: z
+    .string()
+    .min(1, { message: 'Plot is required' })
+    .max(100, { message: 'Plot must be 100 characters or less' }),
+  publicationYear: z
+    .number()
+    .int()
+    .positive({ message: '기원 전 책은 아직...' })
+    .max(new Date().getFullYear(), {
+      message: '미래에서 오셨군요!',
+    }),
+  publisher: z
+    .string()
+    .min(1, { message: 'Publisher is required' })
+    .max(20, { message: 'Publisher must be 20 characters or less' }),
   price: z.number().positive({ message: 'Price must be a positive number' }),
   amount: z
     .number()
     .int()
-    .positive({ message: 'Amount must be a positive integer' }),
+    .positive({ message: 'Amount must be a positive integer' })
+    .max(9999, { message: 'Amount cannot exceed 9999' }),
 });
 
 type BookFormData = z.infer<typeof bookSchema>;
 
-const formFields: Array<{
+const addBookFormFields: Array<{
   name: keyof BookFormData;
   label: string;
   type: string;
@@ -55,7 +74,7 @@ export default function AddBookForm({ onClose }: { onClose: () => void }) {
       <h2 className="text-2xl font-bold mb-4">Add New Book</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {formFields.map(({ name, label, type }) => (
+        {addBookFormFields.map(({ name, label, type }) => (
           <div key={name} className="relative">
             <label htmlFor={name} className="block text-gray-700 mb-1">
               {label}
@@ -63,7 +82,7 @@ export default function AddBookForm({ onClose }: { onClose: () => void }) {
             <input
               id={name}
               type={type}
-              {...register(name)}
+              {...register(name, { valueAsNumber: type === 'number' })}
               className="w-full px-2 py-1 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600"
             />
             {errors[name] && (
