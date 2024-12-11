@@ -1,6 +1,6 @@
 import { I_Books } from '@/app/api/books/type';
 
-const BASE_URL = process.env.VERCEL_URL
+const BASE_URL = process.env.VERCEL_ENV
   ? `https://${process.env.VERCEL_URL}`
   : 'http://localhost:3000';
 
