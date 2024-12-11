@@ -41,10 +41,10 @@ export default function BookDetail() {
           <strong>Publisher:</strong> {currentBook?.publisher}
         </p>
         <p className="text-lg text-gray-700 mb-2">
-          <strong>Price:</strong> {currentBook?.price.toLocaleString()}원
+          <strong>Price:</strong> {currentBook?.price?.toLocaleString()}원
         </p>
         <p className="text-lg text-gray-700 mb-4">
-          <strong>Available Amount:</strong> {currentBook?.amount}
+          <strong>Available Amount:</strong> {currentBook?.amount}개
         </p>
       </section>
       <footer className="flex items-center space-x-4 mt-4">
