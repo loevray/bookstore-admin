@@ -111,6 +111,11 @@ export async function POST(req: NextRequest) {
     const newBookId = crypto.randomUUID();
     const book = await req.json();
 
+    await setDoc(doc(db, 'books', newBookId), {
+      ...book,
+      id: newBookId,
+    });
+
     return NextResponse.json(
       { id: newBookId },
       {
