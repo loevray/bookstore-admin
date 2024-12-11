@@ -3,6 +3,10 @@
 import { useForm, FieldValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { I_Books } from '@/app/api/books/type';
+import { addBook } from '@/app/lib/services/api';
+import { useRouter } from 'next/navigation';
 
 const bookSchema = z.object({
   title: z
@@ -52,6 +56,10 @@ const addBookFormFields: Array<{
 ];
 
 export default function AddBookForm({ onClose }: { onClose: () => void }) {
+  const queryClient = useQueryClient();
+
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -60,9 +68,18 @@ export default function AddBookForm({ onClose }: { onClose: () => void }) {
     resolver: zodResolver(bookSchema),
   });
 
+  const { mutate } = useMutation({
+    mutationFn: (newBookData: Omit<I_Books, 'id' | 'totalBooks'>) =>
+      addBook({ newBookData }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['booklist'] });
+      router.push('/');
+    },
+  });
+
   const onSubmit = (data: BookFormData) => {
     console.log(data);
-    // 여기에 책을 추가하는 API 호출 로직 추가
+    mutate(data);
     onClose();
   };
 
