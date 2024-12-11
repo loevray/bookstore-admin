@@ -2,7 +2,6 @@
 
 build a bookstore for admin.
 
----
 # Key Features
 핵심 요구사항을 구현한 내용에 대해 설명합니다.
 
@@ -25,8 +24,6 @@ build a bookstore for admin.
 
 ### Etc...
 - api 반환타입이 자주사용되어 `type.ts`파일로 분리하였습니다.[링크](https://github.com/loevray/bookstore-admin/blob/docs/readme/src/app/api/books/type.ts)
-
----
 
 # FrontEnd
 
@@ -85,7 +82,7 @@ build a bookstore for admin.
  - 숫자로 업데이트 하기, 낙관적 업데이트, 짧은 API요청주기 방지(디바운싱) 등. 적용하지 못한 최적화가 많습니다.
 - 수량 업데이트 후 현재 책 상세정보의 캐시를 초기화 시켜 ui에 표시된 숫자를 바로 업데이트합니다. [링크](https://github.com/loevray/bookstore-admin/blob/eb8191a4e60b19e88e76f21e6669487005dc2b7f/src/app/%5Bid%5D/BookDetail.tsx#L27)
 
-### Create, Delete
+### Create Book
 
 책 추가는 홈 화면 우측하단 [버튼](https://github.com/loevray/bookstore-admin/blob/eb8191a4e60b19e88e76f21e6669487005dc2b7f/src/app/_components/book/FloatingButton.tsx#L6)을 클릭하면 [입력폼](https://github.com/loevray/bookstore-admin/blob/eb8191a4e60b19e88e76f21e6669487005dc2b7f/src/app/_components/book/AddBookForm.tsx#L58)이 나옵니다.
 <br/>
@@ -101,6 +98,7 @@ build a bookstore for admin.
 - 문서 생성시, [캐시를 초기화하고 홈으로 보냅니다.](https://github.com/loevray/bookstore-admin/blob/eb8191a4e60b19e88e76f21e6669487005dc2b7f/src/app/_components/book/AddBookForm.tsx#L75)
 - `react-hook-form`으로 인풋 제작시 반복되는 작업이 많아 [매핑패턴을 이용하였습니다.](https://github.com/loevray/bookstore-admin/blob/eb8191a4e60b19e88e76f21e6669487005dc2b7f/src/app/_components/book/AddBookForm.tsx#L94)
 
+### Delete Book
 
 문서 삭제는 책 상세페이지 하단 [버튼]((https://github.com/loevray/bookstore-admin/blob/eb8191a4e60b19e88e76f21e6669487005dc2b7f/src/app/%5Bid%5D/BookDetail.tsx#L92))입니다.
 <br/>
@@ -110,7 +108,53 @@ build a bookstore for admin.
 - 현재 별다른 인증 없이 책의 추가,수정,삭제가 가능합니다. 로그인처럼 특정한 인증을 받은 유저만 할 수 있으면 좋을 것 같습니다.
 - 문서의 id를 받아 삭제합니다. [삭제후 홈으로 이동하고 현재 책 캐시를 제거합니다.](https://github.com/loevray/bookstore-admin/blob/eb8191a4e60b19e88e76f21e6669487005dc2b7f/src/app/%5Bid%5D/BookDetail.tsx#L38)
 
+# Code architecture, Optimize
 
+### ErrorBoundary, Suspense
+
+`ErrorBoundary`와 `Suspense`를 한번에 사용하는 [ApiQueryWrapper컴포넌트](https://github.com/loevray/bookstore-admin/blob/3855dac12e1f650db59d83d4199dc8a580ad4f53/src/app/_components/book/ApiQueryWrapper.tsx#L7)를 만들어 사용했습니다.
+
+- API호출시 `useQuery`를 사용하게되면 컴포넌트 내에서 `에러, 로딩`처리를 해야합니다. 이 처리를 바깥으로 빼내 선언적으로 처리하기위하여 해당 컴포넌트와 `useSuspenseQuery`를 같이 사용하였습니다.
+  - `useSuspenseQuery`는 반환 데이터가 not nullish여서 타입스크립트를 사용할때도 편리해서 사용했습니다.
+- 현재는 하드코딩 된 fallback들을 사용하고 있으나, props로 받아와서 넘겨주면 좋을 것 같습니다.
+  - 에러쪽 fallback에는 `reset, error`를 넣어주고있어, 각 에러에 맞는 처리 후 에러 리셋기능이 필요하다면 추가하면 될 듯 합니다.
+  - 예외처리를 단순히 구현만 해두었습니다.
+
+
+
+### 아쉬운점들...
+
+- 서버측 API테스트, 프론트측 storybook과 jest를 이용한 렌더 테스트, 유틸함수 유닛 테스트
+- 메타태그를 이용한 SEO
+- 번들링 최적화
+- lighthouse를 이용한 사이트 최적화
+- 변수명, 매직넘버의 상수화
+- 겹치는 기능 함수로 분리
+- 도메인 로직과 ui로직의 분리
+
+# ETC
+
+- 커밋은 최대한 간단명료하게 작성하였습니다. 
+- 이슈와 풀리퀘스트는 하나의 템플릿만을 이용해 작성하였습니다.
+- 간단한 빌드와 테스트를 위한 CI를 도입했습니다. (테스트는 구현이 늦어져 삭제하였습니다...)
+
+---
+
+# Tech Stack
+
+### used
+- `Next.js` : 백엔드 코드까지 한번에 작성하기 위해 사용하였습니다
+- `React-Query` : Next의 `fetch`만으로도 데이터 페칭은 가능하나, 선언적 프로그래밍(`useSuspense`)과 클라이언트측 캐시를 위해 도입하였습니다.
+- `firebase`: 데이터베이스를 대신하기 위한 클라우드 db입니다.
+- `react-hook-form` : 비제어 컴포넌트의 장점을 살리고, form validation작성시 보일러플레이트를 간소화 하기위해 사용하였습니다.
+- `zod` : 위 라이브러리의 타입 검사를 하기 위하여 사용하였습니다.
+
+### not used
+
+- `Zustand` : 클라이언트측 상태관리를 위해 설치하였으나, 페이지구현에 필요한 클라이언트 상태가 거의 없어서 사용하지 않았습니다.
+- `Jest` : 서버측과 클라이언트측 테스트를 위해 설치하였으나, 시간부족과 미숙함으로 인하여 사용하지 않았습니다.
+- `Storybook` : 클라이언트측 컴포넌트 테스트를 위해 설치하였으나, 위와 동일한 이유로 사용하지 않았습니다.
+- `@testing-library/react` : 클라이언트측 컴포넌트 테스트를 위해 설치하였으나, 위와 동일한 이유로 사용하지 않았습니다.
 
 ---
 
