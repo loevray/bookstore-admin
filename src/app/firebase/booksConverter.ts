@@ -11,6 +11,7 @@ const booksConverter: FirestoreDataConverter<I_Books> = {
       publicationYear: book.publicationYear,
       publisher: book.publisher,
       price: book.price,
+      amount: book.amount,
     };
   },
   fromFirestore(snapshot, options) {
@@ -23,6 +24,7 @@ const booksConverter: FirestoreDataConverter<I_Books> = {
       publicationYear: data.publicationYear,
       publisher: data.publisher,
       price: data.price,
+      amount: data.amount,
     } as I_Books;
   },
 };

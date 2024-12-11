@@ -4,8 +4,8 @@ import {
   doc,
   getDoc,
   FirestoreError,
-  setDoc,
   deleteDoc,
+  updateDoc,
 } from 'firebase/firestore';
 import booksConverter from '@/app/firebase/booksConverter';
 
@@ -46,14 +46,14 @@ export async function GET(req: NextRequest, { params }: I_RouteHandlerParams) {
 
 export async function PUT(req: NextRequest, { params }: I_RouteHandlerParams) {
   try {
-    const { id: bookId } = await params;
+    const bookId = (await params).id;
     const updatedBookData = await req.json();
 
     const bookDocumentRef = doc(db, 'books', bookId).withConverter(
       booksConverter,
     );
 
-    await setDoc(bookDocumentRef, updatedBookData);
+    await updateDoc(bookDocumentRef, updatedBookData);
 
     return NextResponse.json(
       { message: 'Book updated successfully' },

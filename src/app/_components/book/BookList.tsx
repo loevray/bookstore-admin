@@ -29,16 +29,22 @@ export default function BookList() {
 
   return (
     <div>
-      <section className="flex flex-wrap gap-4">
+      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {data.map((book) => (
-          <HomeBook {...book} key={book.id} />
+          <div
+            key={book.id}
+            onClick={() => router.push(`/${book.id}`)}
+            className="cursor-pointer transition transform hover:scale-105"
+          >
+            <HomeBook {...book} />
+          </div>
         ))}
       </section>
-      <div className="mt-4">
+      <div className="mt-8 flex justify-center items-center">
         <button
           onClick={() => handlePageChange(+page - 1)}
           disabled={+page <= 1}
-          className="bg-gray-500 text-white p-2 mr-2"
+          className="bg-gray-500 text-white p-2 mr-2 disabled:opacity-50"
         >
           Previous
         </button>
@@ -46,7 +52,7 @@ export default function BookList() {
           <button
             key={`${index}${maxPage}`}
             onClick={() => handlePageChange(index + 1)}
-            className={`p-2 ${
+            className={`p-2 mx-1 ${
               +page === index + 1
                 ? 'bg-blue-500 text-white'
                 : 'bg-gray-200 text-black'
@@ -57,13 +63,13 @@ export default function BookList() {
         ))}
         <button
           onClick={() => handlePageChange(+page + 1)}
-          className="bg-gray-500 text-white p-2 ml-2"
+          className="bg-gray-500 text-white p-2 ml-2 disabled:opacity-50"
           disabled={+page >= maxPage}
         >
           Next
         </button>
-        <div>Page {page}</div>
       </div>
+      <div className="text-center mt-4">Page {page}</div>
     </div>
   );
 }
