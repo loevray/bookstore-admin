@@ -39,7 +39,10 @@ export default function BookDetail() {
     mutationFn: (bookId: string) => deleteBook({ bookId }),
     onSuccess: () => {
       router.push('/');
-      queryClient.invalidateQueries({ queryKey: ['book', bookId] });
+      queryClient.invalidateQueries({ queryKey: ['book', 'bookList', bookId] });
+    },
+    onError: (e) => {
+      throw e;
     },
   });
 
