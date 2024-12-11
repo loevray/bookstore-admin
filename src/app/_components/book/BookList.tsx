@@ -9,10 +9,12 @@ export default function BookList() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const page = searchParams.get('page') ?? 1;
+  const title = searchParams.get('title') ?? '';
+  const author = searchParams.get('author') ?? '';
 
   const { data } = useSuspenseQuery({
-    queryKey: ['bookList', page],
-    queryFn: () => fetchBookList(+page),
+    queryKey: ['bookList', { page, title, author }],
+    queryFn: () => fetchBookList({ page: +page, title, author }),
   });
 
   const handlePageChange = (newPage: number) => {
