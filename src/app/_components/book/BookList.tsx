@@ -31,7 +31,9 @@ export default function BookList() {
     <div>
       <section className="flex flex-wrap gap-4">
         {data.map((book) => (
-          <HomeBook {...book} key={book.id} />
+          <div key={book.id} onClick={() => router.push(`/${book.id}`)}>
+            <HomeBook {...book} />
+          </div>
         ))}
       </section>
       <div className="mt-4">
